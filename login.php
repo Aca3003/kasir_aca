@@ -1,46 +1,78 @@
+<?php
+	@ob_start();
+	session_start();
+	if(isset($_POST['proses'])){
+		require 'config.php';
+			
+		$user = strip_tags($_POST['user']);
+		$pass = strip_tags($_POST['pass']);
+
+		$sql = 'select member.*, login.user, login.pass
+				from member inner join login on member.id_member = login.id_member
+				where user =? and pass = md5(?)';
+		$row = $config->prepare($sql);
+		$row -> execute(array($user,$pass));
+		$jum = $row -> rowCount();
+		if($jum > 0){
+			$hasil = $row -> fetch();
+			$_SESSION['admin'] = $hasil;
+			echo '<script>alert("Login Sukses");window.location="index.php"</script>';
+		}else{
+			echo '<script>alert("Login Gagal");history.go(-1);</script>';
+		}
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- bootstrap online-->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword">
 
-    <link rel="stylesheet" href="asset/css/bootstrap.css">
-</head>
+    <title>Login To Admin</title>
 
-<body>
-<div class="container">
-        <div class="row justify-content-center" style="margin-top: 100px;">
-            <div class="col-md-6">
-                <div class="text-center mb-4">
-                    <!-- Ganti dengan URL logo yang sesuai -->
-                    <img src="https://e7.pngegg.com/pngimages/941/619/png-clipart-cash-register-pay-text-logo.png" alt="User Logo" class="img-fluid" style="width: 100px;">
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">Login</h4>
-                        <form action="login-proses.php" method="post">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <!--external css-->
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        
+    <!-- Custom styles for this template -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/style-responsive.css" rel="stylesheet">
 
-    <script src="asset/js/bootstrap.bundle.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
-</body>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
 
+  <body style="background:#004643;color:#fff;">
+
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+
+	  <div id="login-page" style="padding-top:3pc;">
+	  	<div class="container">
+		      <form class="form-login" method="POST">
+		        <h2 class="form-login-heading">Aplikasi POS</h2>
+		        <div class="login-wrap">
+		            <input type="text" class="form-control" name="user" placeholder="User ID" autofocus>
+		            <br>
+		            <input type="password" class="form-control" name="pass" placeholder="Password">
+		            <br>
+		            <button class="btn btn-primary btn-block" name="proses" type="submit"><i class="fa fa-lock"></i> SIGN IN</button>
+		        </div>
+		      </form>	  	
+	  	
+	  	</div>
+	  </div>
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+  </body>
 </html>
+
